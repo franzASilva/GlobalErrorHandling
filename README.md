@@ -4,5 +4,6 @@
 - [minimal API](https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-8.0&tabs=visual-studio)
 
 **Use Swagger for testing**
-![image](https://github.com/user-attachments/assets/39858a79-634f-42d8-b01b-7a2d6c9dfc8d)
+![image](https://github.com/user-attachments/assets/a345d431-331d-4325-af0a-966358cccf22)
+
 
