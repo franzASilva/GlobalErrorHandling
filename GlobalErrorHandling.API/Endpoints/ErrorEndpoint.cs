@@ -1,5 +1,6 @@
 ﻿using GlobalErrorHandling.Domain.Exceptions;
 using GlobalErrorHandling.Domain.Model;
+using GlobalErrorHandling.Domain.Services;
 using GlobalErrorHandling.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -21,9 +22,9 @@ public static class ErrorEndpoint
         })
         .WithTags("Error API");
 
-        endpoints.MapGet("/error/product", () =>
+        endpoints.MapGet("/error/product", (IDummyService dummyService) =>
         {
-            throw new ProductException("Product Id 1234");
+            throw new ProductException("Broken product", dummyService.GetDummyValue(123));
         })
         .WithOpenApi(operation => new(operation)
         {
@@ -43,14 +44,19 @@ public static class ErrorEndpoint
         })
         .WithTags("Error API");
 
-        endpoints.MapGet("/error/outof", () =>
+        endpoints.MapGet("/error/outof", (IDummyService dummyService) =>
         {
             try
             {
-                throw new ProductException("default exception");
+                throw new ProductException("default exception", dummyService.GetDummyValue(321));
             }
             catch (Exception ex)
             {
+                if (ex is BusinessValidationException busException)
+                {
+                    return Results.BadRequest($"Out of global error handler {ex.Message} - Business Errors: {string.Join("; ", busException.Errors.Select(e => e.Error))}");
+                }
+                
                 return Results.BadRequest($"Out of global error handler {ex.Message}");
             }
         })
